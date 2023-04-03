@@ -57,11 +57,16 @@ while i < 1:
         while x < 1:
             page_content = requests.get(item['link']).content
             soup_page = soup(page_content, 'html.parser')
-            print(soup_page.findAll('br'))
+            lyricpage = soup_page.findAll('div', {"class": "Lyrics__Container-sc-1ynbvzw-5 Dzxov"})
+            print(len(lyricpage))
+            a=0
+            while a < len(lyricpage):
+                text = " ".join(lyricpage[a].strings) 
+                print(text)
+                a+=1
 
-
+            # third_p = soup_page.find('div', {"class": "Lyrics__Container-sc-1ynbvzw-5 Dzxov"})
+            # print(''.join(third_p.find('br').next_siblings))
 
             x+=1
     i+=2
-
-# 
