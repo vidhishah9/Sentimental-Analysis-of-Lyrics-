@@ -99,5 +99,5 @@ while i < 200:
                 x+=1
     i+=2
  
-
-
+print(means)
+print(len(means))
