@@ -5,6 +5,18 @@ import numpy as np
 import rpy2 
 from rpy2 import robjects
 from rpy2.robjects.packages import importr
+import rpy2.robjects.packages as rpackages
+from rpy2.robjects import r
+from rpy2.robjects.packages import importr
+from rpy2.robjects import pandas2ri
+from rpy2.robjects.conversion import localconverter
+import pandas as pd
+import pandas as pd
+import rpy2.robjects as ro
+from rpy2.robjects.packages import importr
+from rpy2.robjects import pandas2ri
+
+from rpy2.robjects.conversion import localconverter
 
 
 print("Enter the link")
@@ -44,10 +56,10 @@ print(combinedarr)
 
 API_KEY = "AIzaSyAEmC6cs0DvRZPI5rBjaXWOEH30z7oaWAI"
 resource = build("customsearch", 'v1', developerKey=API_KEY).cse()
-
+means = []
 i = 0
 # while i < len(combinedarr):
-while i < 1:
+while i < 200:
     query = combinedarr[i] + " " + combinedarr[i+1]
     print(query)
     result = resource.list(q=query, cx='b4587532947334d8a').execute()
@@ -59,48 +71,33 @@ while i < 1:
             page_content = requests.get(item['link']).content
             soup_page = soup(page_content, 'html.parser')
             lyricpage = soup_page.findAll('div', {"class": "Lyrics__Container-sc-1ynbvzw-5 Dzxov"})
-            print(len(lyricpage))
-            a=0
-            while a < len(lyricpage):
-                text = " ".join(lyricpage[a].strings) 
-                original+=text
-                a+=1
-            print(original)
-
-            x+=1
+            if len(lyricpage)==0:
+                x+=1
+                means.append(float(0))
+            else:
+                a=0
+                while a < len(lyricpage):
+                    text = " ".join(lyricpage[a].strings) 
+                    original+=text
+                    a+=1
+                utils = rpackages.importr('utils')
+                syuzhet = importr('syuzhet')
+                song_lyrics = original
+                s_v = syuzhet.get_sentences(song_lyrics)
+                poa_word_v = syuzhet.get_tokens(song_lyrics, pattern = "\\W")
+                syuzhet_vector = syuzhet.get_sentiment(poa_word_v, method = "syuzhet")
+                pandas2ri.activate()
+                pd_df = pd.DataFrame(syuzhet_vector)
+                base = importr('base')
+                with localconverter(ro.default_converter + pandas2ri.converter):
+                    df_summary = base.summary(pd_df)
+                    mean = pd_df.mean()
+                    print(mean)
+                means.append(float(mean))
+                original = ""
+                text = ""
+                x+=1
     i+=2
-
-import rpy2.robjects.packages as rpackages
-from rpy2.robjects import r
-from rpy2.robjects.packages import importr
-from rpy2.robjects import pandas2ri
-from rpy2.robjects.conversion import localconverter
-import pandas as pd
-import pandas as pd
-import rpy2.robjects as ro
-from rpy2.robjects.packages import importr
-from rpy2.robjects import pandas2ri
-
-from rpy2.robjects.conversion import localconverter
+ 
 
 
-# Install and import the 'syuzhet' package
-utils = rpackages.importr('utils')
-utils.install_packages('syuzhet')
-syuzhet = importr('syuzhet')
-
-song_lyrics = "Rising up, back on the street Did my time, took my chances Went the distance, now I'm back on my feet Just a man and his will to survive So many times, it happens too fast You trade your passion for glory Don't lose your grip on the dreams of the past You must fight just to keep them alive "
-s_v = syuzhet.get_sentences(song_lyrics)
-poa_word_v = syuzhet.get_tokens(song_lyrics, pattern = "\\W")
-syuzhet_vector = syuzhet.get_sentiment(poa_word_v, method = "syuzhet")
-
-
-pandas2ri.activate()
-pd_df = pd.DataFrame(syuzhet_vector)
-
-base = importr('base')
-with localconverter(ro.default_converter + pandas2ri.converter):
-  df_summary = base.summary(pd_df)
-  mean = pd_df.mean()
-
-print(float(mean))
