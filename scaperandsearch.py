@@ -12,7 +12,7 @@ from rpy2.robjects.conversion import localconverter
 import pandas as pd
 import rpy2.robjects as ro
 import re
-from rpy2.robjects.conversion import localconverter
+# from rpy2.robjects.conversion import localconverter
 utils = rpackages.importr('utils')
 syuzhet = importr('syuzhet')
 base = importr('base')
@@ -117,9 +117,7 @@ def findmean(numb):
     meanstotals.append(meantot)
     print(meanstotals)
 
-
-
-numb = 2016
+numb = 1980
 while(numb<=2021):
     findmean(numb)
     numb=numb + 1
