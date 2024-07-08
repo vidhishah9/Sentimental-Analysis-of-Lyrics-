@@ -64,7 +64,7 @@ def findmean(numb):
             i+=1
         a+=1
         
-    API_KEY = "AIzaSyAEmC6cs0DvRZPI5rBjaXWOEH30z7oaWAI"
+    API_KEY = ""
     resource = build("customsearch", 'v1', developerKey=API_KEY).cse()
     means = []
     i = 0
