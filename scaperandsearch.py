@@ -29,16 +29,7 @@ def findmean(numb):
     setnumb = 200
     genreone = "R&B"
     genreset = ""
-    for title in titles:
-        titleextract = title.get_text().strip()
-        print(titleextract)
-        if genreone in titleextract:
-            genreset = genreone
-        print(genreset)
-        temp = re.findall(r'\d+', titleextract)
-        print(temp[0])
-        setnumb = int(temp[0]) * 2
-        print(setnumb)
+    
 
     songsarr = []
     artistsarr = []
